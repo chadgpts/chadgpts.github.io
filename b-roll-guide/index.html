@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B-Roll Guide and Prompt | ChadGPT</title>
+<meta name="description" content="The steps to put AI B-roll over your video, plus my prompt that finds where it&#x27;s needed and writes a clip prompt for each moment.">
+<meta name="theme-color" content="#f8fafc">
+<meta name="color-scheme" content="only light">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<style>
+:root{--bg:#f8fafc;--card:#ffffff;--white:#ffffff;--ink:#023047;--muted:#48647A;--muted-bg:#48647A;--line:#d5e3ec;--accent:#fb8500;--accent-text:#023047;--on-accent:#023047;--brand-ink:#023047;--green:#219ebc;--up:#219ebc;--down:#9B2C2C;--clay:#9B2C2C;--gain:#023047;--warn-bg:#fff1dc;--warn-line:#ffd8a6;--warn-stripe:#fb8500;--warn-ink:#023047;--tip-bg:#eaf6fb;--tip-line:#8ecae6;--rule-bg:#023047;--rule-ink:#ffffff;--rule-title:#ffddaa;--result-bg:#023047;--result-ink:#ffffff;--fill-bg:#ffddaa;--fill-ink:#023047;--sel-bg:#fff1dc;--focus:rgba(251,133,0,.35);--tabs-bg:#eef4f8;--placeholder:#6f8796;--shadow:0 1px 2px rgba(2,48,71,.06)}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+main{max-width:560px;margin:0 auto;padding:20px 16px 32px}
+.top{margin:0 0 18px}
+.logo{display:flex;align-items:center;gap:8px;margin:0 0 14px}
+.logo-i{display:block;flex:0 0 auto}
+.logo-n{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-ink)}
+h1{margin:0 0 6px;font-size:30px;line-height:1.12;font-weight:800}
+.sub{margin:0;color:var(--muted-bg);font-size:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 14px;box-shadow:var(--shadow)}
+.card>h2{margin:0 0 12px;font-size:12px;line-height:1.35;letter-spacing:.14em;color:var(--muted);font-weight:700;text-transform:uppercase}
+.b-chadgpt .card>h2::before{content:"";display:inline-block;width:14px;height:3px;border-radius:2px;background:var(--accent);vertical-align:middle;margin:-2px 8px 0 0}
+.blk+.blk{margin-top:16px}
+p{margin:0 0 10px}
+p:last-child{margin-bottom:0}
+h3{margin:0 0 4px;font-size:16px;line-height:1.3;font-weight:700}
+.lst{margin:0;padding-left:22px}
+.lst li{margin:6px 0}
+.lst li:first-child{margin-top:0}
+.lst li:last-child{margin-bottom:0}
+.k{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.num{flex:0 0 30px;width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--on-accent);font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;line-height:1}
+.steps{list-style:none;margin:0;padding:0}
+.steps>li{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-top:1px solid var(--line)}
+.steps>li:first-child{border-top:0;padding-top:0}
+.steps>li:last-child{padding-bottom:0}
+.step-b{flex:1 1 auto;min-width:0;padding-top:3px}
+.step-do{margin-top:2px}
+.ready{margin:8px 0 0;font-size:15px;color:var(--muted)}
+.ready .k{margin-right:4px}
+.ck-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 4px}
+.ck-count{font-weight:700;font-size:15px;color:var(--accent-text)}
+.ck-row{display:flex;gap:12px;align-items:flex-start;min-height:48px;padding:12px 2px;border-top:1px solid var(--line);cursor:pointer;margin:0}
+.ck-list .ck-row:first-child{border-top:0}
+.ck-row input{appearance:none;-webkit-appearance:none;flex:0 0 24px;width:24px;height:24px;margin:0;border:2px solid var(--accent);border-radius:6px;background:var(--white);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer}
+.ck-row input::before{content:"";width:11px;height:6px;border:solid var(--on-accent);border-width:0 0 3px 3px;transform:translateY(-1px) rotate(-45deg);opacity:0}
+.ck-row input:checked{background:var(--accent)}
+.ck-row input:checked::before{opacity:1}
+.ck-row input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.ck-t{flex:1 1 auto;min-width:0;padding-top:1px}
+.ck-note{display:block;font-size:14px;color:var(--muted);margin-top:3px}
+.fields{display:flex;flex-direction:column;gap:16px}
+.fld label{display:block;font-weight:700;font-size:15px;margin:0 0 4px}
+.hint{font-size:14px;color:var(--muted);margin:0 0 6px}
+.inp{display:block;width:100%;font:inherit;font-size:17px;color:var(--ink);background:var(--white);border:1.5px solid var(--line);border-radius:10px;padding:11px 14px;min-height:48px;appearance:none;-webkit-appearance:none;margin:0}
+textarea.inp{resize:vertical;line-height:1.4}
+select.inp{background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 20px) 50%,calc(100% - 14px) 50%;background-size:6px 6px;background-repeat:no-repeat;padding-right:36px}
+.inp::placeholder{color:var(--placeholder);opacity:1}
+.inp:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--focus)}
+.write-lines{display:none}
+.write-lines span{display:block;height:30px;border-bottom:1px solid var(--muted)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:48px;padding:11px 16px;border-radius:12px;font:inherit;font-weight:700;font-size:16px;line-height:1.25;text-decoration:none;cursor:pointer;border:1.5px solid transparent;text-align:center;margin:0}
+.btn:focus-visible,.tab:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.btn-primary{background:var(--accent);color:var(--on-accent)}
+.btn-secondary{background:var(--white);color:var(--accent-text);border-color:var(--accent)}
+.btn-small{display:inline-flex;width:auto;min-height:40px;padding:8px 14px;font-size:15px;flex:0 0 auto}
+.btn-quiet{background:transparent;color:var(--accent-text);border-color:var(--line)}
+.btn-danger{background:var(--white);color:var(--clay);border-color:var(--warn-line)}
+.btn.is-ok{border-color:var(--accent)}
+.lm-link{justify-content:space-between;text-align:left}
+.lm-link .arrow{font-size:20px;line-height:1}
+.lm-link.top,.btn-pdf{margin:0 0 14px}
+.prompt{border:1px solid var(--line);border-radius:12px;background:var(--white);padding:14px}
+.solo .prompt{border:0;padding:0;background:none}
+.use{font-size:15px;color:var(--muted);margin:0 0 10px}
+.ptext{white-space:pre-wrap;font-size:15px;line-height:1.5;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0 12px;overflow-wrap:anywhere}
+.solo .ptext{background:var(--white)}
+.fill{background:var(--fill-bg);color:var(--fill-ink);border-radius:4px;padding:0 2px;font-weight:700}
+.callout{border-radius:12px;padding:14px 16px;border:1px solid transparent}
+.callout.top{margin:0 0 14px}
+.callout-t{font-size:12px;line-height:1.35;letter-spacing:.14em;text-transform:uppercase;font-weight:800;margin:0 0 6px}
+.c-rule{background:var(--rule-bg);color:var(--rule-ink)}
+.c-rule .callout-t{color:var(--rule-title)}
+.c-warn{background:var(--warn-bg);color:var(--warn-ink);border-color:var(--warn-line);border-left:4px solid var(--warn-stripe);font-weight:600}
+.c-tip{background:var(--tip-bg);color:var(--ink);border-color:var(--line);border-left:4px solid var(--tip-line)}
+.c-tip .callout-t{color:var(--accent-text)}
+.pairs-head{display:none}
+.pair{padding:12px 0;border-top:1px solid var(--line)}
+.pairs>.pair:first-child,.pairs-head+.pair{border-top:0;padding-top:0}
+.pair:last-child{padding-bottom:0}
+.pair-lt{display:block;font-weight:700}
+.pair-r{margin-top:4px}
+.tag{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--muted);margin:0 0 2px}
+.tbl{width:100%;border-collapse:collapse;table-layout:fixed;font-size:15px}
+.tbl th{text-align:left;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:0 10px 8px 0;border-bottom:1.5px solid var(--line);vertical-align:bottom}
+.tbl td{padding:10px 10px 10px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td:first-child .td-v{font-weight:700}
+.td-l{display:none}
+.anat{margin:0;text-align:center}
+.anat-svg{display:inline-block;max-width:100%;height:auto;vertical-align:top}
+.anat-svg .t-h{font-size:13px;font-weight:700;fill:var(--ink)}
+.anat-svg .t-l{font-size:13px;fill:var(--ink)}
+.anat-svg .t-lead{stroke:var(--muted);stroke-width:1;stroke-dasharray:2 2}
+.cdls{display:flex;flex-direction:column;gap:12px}
+.cdl{display:flex;flex-wrap:wrap;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;background:var(--white);padding:12px}
+.cdl-fig{flex:0 0 122px;display:flex;justify-content:center}
+.cdl-svg{display:block;flex:0 0 auto;max-width:100%;height:auto}
+.cdl-t{flex:1 1 150px;min-width:0}
+.says{font-weight:600;margin:4px 0 0}
+.cnote{font-size:14px;color:var(--muted);margin:4px 0 0}
+.sess{margin:0}
+.sess h3{margin:0 0 10px}
+.sess-svg{display:block;width:100%}
+.sess-svg text{font-size:12.5px;paint-order:stroke;stroke:var(--card);stroke-width:4px;stroke-linejoin:round}
+.sess-svg .t-tick{fill:var(--muted);font-weight:700}
+.sess-svg .t-nm{fill:var(--ink);font-weight:700}
+.sess-svg .t-tm,.sess-svg .t-cl{fill:var(--muted)}
+.sess-svg .t-mk{fill:var(--ink);font-weight:600}
+.sess-svg .t-grid{stroke:var(--line);stroke-width:1}
+.sess-svg .t-track{fill:var(--line);opacity:.45}
+.sess-svg .t-bar{fill:var(--accent)}
+.sess-svg .t-close{fill:var(--muted);opacity:.2}
+.sess-svg .t-mark{stroke:var(--ink);stroke-width:1.5;stroke-dasharray:4 3}
+.sess-list{list-style:none;margin:12px 0 0;padding:0;font-size:15px}
+.sess-list li{margin:6px 0}
+.sess-when{color:var(--muted)}
+.sess-note{font-size:14px;color:var(--muted);margin:10px 0 0}
+.stages{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.stage{border:1px solid var(--line);border-radius:12px;background:var(--white);padding:14px}
+.stage-h{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+.stage-h h3{margin:0;font-size:17px}
+.kv{margin:0}
+.kv>div{padding:8px 0;border-top:1px solid var(--line)}
+.kv>div:first-child{border-top:0;padding-top:0}
+.kv>div:last-child{padding-bottom:0}
+.kv dt{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--muted);margin:0 0 2px}
+.kv dd{margin:0}
+.tabs{display:flex;gap:6px;background:var(--tabs-bg);padding:4px;border-radius:12px;margin:0 0 14px}
+.tab{flex:1 1 0;min-height:44px;border:0;border-radius:9px;background:transparent;font:inherit;font-weight:700;font-size:16px;color:var(--ink);cursor:pointer;margin:0}
+.tab[aria-selected=true]{background:var(--white);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.jsum{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;background:var(--result-bg);color:var(--result-ink);border-radius:12px;padding:14px;margin:0 0 14px}
+.jsum>div{min-width:0}
+.jsum .wide{grid-column:1/-1}
+.jk{display:block;font-size:13px;font-weight:600}
+.jv{display:block;font-size:24px;font-weight:800;line-height:1.15}
+.jsub{display:block;font-size:13px}
+.jform label,.journal .jpanel>label{display:block;font-weight:700;font-size:15px;margin:12px 0 6px}
+.jform>label:first-child{margin-top:0}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.row2 label{margin-top:12px}
+.jform .row2:first-child label{margin-top:0}
+.jform .hint{margin:6px 0 0}
+.seg{border:0;margin:14px 0 0;padding:0;min-width:0}
+.seg legend{font-weight:700;font-size:15px;padding:0;margin:0 0 6px}
+.seg .opts{display:flex;gap:8px}
+.jform .seg label{position:relative;flex:1 1 0;min-width:0;margin:0;display:flex;font-weight:600}
+.seg input{position:absolute;top:0;left:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;font-size:16px}
+.seg span{flex:1 1 auto;display:flex;align-items:center;justify-content:center;min-height:44px;padding:8px 6px;border:1.5px solid var(--line);border-radius:10px;background:var(--white);text-align:center}
+.seg input:checked+span{border-color:var(--accent);background:var(--sel-bg);box-shadow:inset 0 0 0 1px var(--accent)}
+.seg input:focus-visible+span{outline:3px solid var(--ink);outline-offset:2px}
+.jadd{margin-top:16px}
+.jmsg{min-height:1.45em;margin:10px 0 0;font-size:15px;font-weight:600}
+.jmsg.bad{color:var(--clay)}
+.jh{margin:16px 0 8px}
+.jlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.jlist .empty{color:var(--muted);font-size:15px}
+.jrow{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:12px}
+.jrow-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.jrow-what{font-weight:700;min-width:0}
+.jrow-r{font-weight:800;font-size:18px;white-space:nowrap}
+.gain{color:var(--gain)}
+.loss{color:var(--clay)}
+.jrow-meta{font-size:14px;color:var(--muted);margin:4px 0 0}
+.jrow-think{margin:6px 0 0;font-size:15px;white-space:pre-wrap}
+.jrow-del{margin-top:10px}
+.jtools{display:flex;gap:10px;margin:14px 0 0;flex-wrap:wrap}
+.jtools .btn{flex:1 1 140px;width:auto}
+.addrow{display:flex;gap:10px}
+.addrow .inp{flex:1 1 auto;min-width:0}
+.addrow .btn{flex:0 0 auto;width:auto;padding:11px 20px}
+.quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:10px 0 0}
+.quick .btn{min-height:44px;padding:8px 4px}
+.btlist{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:999px;background:var(--white);padding:0 0 0 12px;font-weight:700}
+.chip-n{font-size:13px;color:var(--muted);font-weight:600}
+.chip-x{width:40px;height:40px;min-height:40px;border:0;border-radius:50%;background:transparent;font:inherit;font-size:20px;line-height:1;color:var(--muted);cursor:pointer;padding:0}
+.print-only{display:none}
+footer{font-size:12px;color:var(--muted-bg);line-height:1.5;margin-top:4px}
+footer p{margin:0 0 8px}
+@media (max-width:519.98px){
+  .tbl,.tbl tbody,.tbl tr,.tbl td{display:block;width:100%}
+  .tbl thead{display:none}
+  .tbl tr{background:var(--white);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 10px}
+  .tbl tr:last-child{margin-bottom:0}
+  .tbl td,.tbl tr:last-child td{border:0;padding:3px 0}
+  .td-l{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+}
+@media (min-width:520px){
+  .pairs-head{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);gap:16px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted);padding:0 0 8px;border-bottom:1.5px solid var(--line);margin:0 0 12px}
+  .pair{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);gap:16px}
+  .pair .tag{display:none}
+  .pair-r{margin-top:0}
+  .kv>div{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px}
+  .kv dt{margin:2px 0 0}
+  .cdls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .jsum{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media print{
+  html,body{background:#fff}
+  body{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  main{padding:0 16px}
+  .card,.callout,.prompt,.stage,.cdl,.steps>li,.ck-row,.pair,.tbl tr,.fld,.anat,.sess,.top,.blk,.jp-log tbody,.jp-bt tr,.kv>div,.lst li,.lm-link,footer{break-inside:avoid}
+  h2,h3,.callout-t,.pairs-head,.use{break-after:avoid}
+  .card{box-shadow:none}
+  button,.btn-pdf,.ck-head,.tabs,.jpanel,.copy-only{display:none!important}
+  .print-only{display:block!important}
+  .ck-row input{background:#fff!important}
+  .ck-row input::before{opacity:0!important}
+  .fld .inp{display:none!important}
+  .write-lines{display:block}
+  .lm-link{display:block;border:0;background:none;padding:0;min-height:0;text-align:left;text-decoration:underline}
+  .lm-link .arrow{display:none}
+  .lm-link::after{content:" (" attr(href) ")";font-weight:400}
+  .jp h3{margin:0 0 6px}
+  .jp h3+p{margin:0 0 8px}
+  .jp-key{font-size:12px;color:var(--muted)}
+  .jp-log,.jp-bt{width:100%;border-collapse:collapse;table-layout:fixed;margin:0 0 14px;background:#fff}
+  .jp-log th{font-size:11px;text-align:left;padding:4px 3px;border:1px solid var(--muted);background:var(--card);overflow-wrap:normal;white-space:nowrap}
+  .jp-log td{height:26px;border:1px solid var(--muted);padding:2px 3px}
+  .jp-log .jp-think td{height:22px;font-size:11px;color:var(--muted);vertical-align:top}
+  .jp-bt td{border:1px solid var(--line);padding:6px 4px;font-size:12px;color:var(--muted);white-space:nowrap}
+  .jp-bt span{display:inline-block;min-width:16px;font-weight:700;color:var(--ink)}
+  .jp-line{font-size:13px;margin:0 0 10px}
+}
+</style>
+</head>
+<body class="b-chadgpt">
+<main>
+<header class="top"><div class="logo"><svg class="logo-i" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="24" height="24" rx="6" fill="#023047"/><path d="M7.5 5.5h9A2.5 2.5 0 0 1 19 8v5.5a2.5 2.5 0 0 1-2.5 2.5H11.2l-3.7 3v-3A2.5 2.5 0 0 1 5 13.5V8a2.5 2.5 0 0 1 2.5-2.5z" fill="none" stroke="#fb8500" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 7.4l.95 2.15 2.15.95-2.15.95L12 13.6l-.95-2.15-2.15-.95 2.15-.95z" fill="#fb8500"/></svg><span class="logo-n">ChadGPT</span></div><h1>B-Roll Guide and Prompt</h1><p class="sub">The steps to put AI B-roll over your video, plus my prompt that finds where it&#x27;s needed and writes a clip prompt for each moment.</p></header>
+<section class="card solo"><div class="blk b-prompt"><div class="prompt" data-prompt="claude-setup"><h3>Let Claude set it up for you</h3><p class="use">Copy this into Claude. It reads this page and my video, then walks you through it.</p><div class="ptext" id="lm-p-1">Open this page and read all of it: https://chadgpts.github.io/b-roll-guide/
+It&#x27;s Chad&#x27;s free B-roll guide and prompt from his ChadGPT video &quot;AI Video B Roll&quot;. What he says in the video is at the bottom of the page.
+
+Set it up with me step by step. Ask me one question at a time for anything only I know, do every part you can yourself, and tell me exactly what to click when it needs my accounts. Where the page and the video differ, follow the page.
+
+If you can&#x27;t open the link, tell me and I&#x27;ll paste the page in.</div><button type="button" class="btn btn-primary" data-copy-prompt="claude-setup" data-target="lm-p-1">Copy prompt</button></div></div></section>
+<section class="card"><h2>The guide</h2><div class="blk b-steps"><ol class="steps"><li><span class="num" aria-hidden="true">1</span><div class="step-b"><h3>Get your transcript</h3><div class="step-do"><p>You need your video&#x27;s words with timestamps, because that&#x27;s how each clip gets timed to what you say.</p><p>In ElevenLabs, open <strong>Speech to Text</strong> and click <strong>Transcribe files</strong>. Upload your video and click <strong>Upload files</strong>. When it&#x27;s done, click your file&#x27;s name, click <strong>Export</strong> and download it as JSON. Already have a transcript with timestamps? Use that.</p></div><p class="ready"><span class="k">Ready when</span> You have your transcript, with timestamps.</p></div></li><li><span class="num" aria-hidden="true">2</span><div class="step-b"><h3>Have Claude or ChatGPT mark the moments</h3><div class="step-do"><p>Paste my B-roll prompt below into Claude or ChatGPT, along with your transcript. It marks only where you mention something people can&#x27;t actually see.</p></div><p class="ready"><span class="k">Ready when</span> You have a short list of moments, not every line of your video.</p></div></li><li><span class="num" aria-hidden="true">3</span><div class="step-b"><h3>Have it write a B-roll prompt for each</h3><div class="step-do"><p>The same prompt does this too. Each moment comes back with its own prompt: vertical, no text in the clip, a few seconds long, timed to your words.</p></div><p class="ready"><span class="k">Ready when</span> Every moment on the list has a prompt you can paste into a video generator.</p></div></li><li><span class="num" aria-hidden="true">4</span><div class="step-b"><h3>Connect Higgsfield to your AI</h3><div class="step-do"><p>I like to make these clips in Higgsfield, but there&#x27;s other models you can use. If you use another one, skip this step.</p><p><strong>In Claude, on a computer:</strong> open <strong>Customize</strong>, then <strong>Connectors</strong>. Click <strong>+ Add</strong>, then <strong>Add custom connector</strong>. Name it Higgsfield, paste this address: <strong>https://mcp.higgsfield.ai/mcp</strong> and click <strong>Continue</strong>. Keep the settings it finds, pick <strong>Sign in now</strong>, click <strong>Add</strong> and sign in to Higgsfield. Then in your chat, click the <strong>+</strong> button at the bottom left, open <strong>Connectors</strong> and switch Higgsfield on.</p><p><strong>In ChatGPT:</strong> open <strong>Plugins</strong> in the sidebar, find Higgsfield, install it and sign in to Higgsfield. Then type <strong>@Higgsfield</strong> in your chat.</p><p>If Higgsfield won&#x27;t connect on your account, go to the paste route in step 5.</p></div><p class="ready"><span class="k">Ready when</span> You ask it: List my recent Higgsfield generations. It answers from your Higgsfield account.</p></div></li><li><span class="num" aria-hidden="true">5</span><div class="step-b"><h3>Generate the clips</h3><div class="step-do"><p>Your AI is going to use Higgsfield to create them. In the same chat, ask: Use Higgsfield to make a clip from each B-roll prompt on the list, vertical 9:16, at the length it says. Tell me what you&#x27;ll make and wait for my OK before each one.</p><p>Each clip comes back in the chat and is saved in your Assets on higgsfield.ai, where you can download it.</p><p>Not connected, or using another model? Paste each prompt into your video generator yourself, set it to vertical and download the clip.</p></div><p class="ready"><span class="k">Ready when</span> You have one clip downloaded for each moment on your list.</p></div></li><li><span class="num" aria-hidden="true">6</span><div class="step-b"><h3>Edit them over your video</h3><div class="step-do"><p>Lay each clip over your video at its timestamps and turn the clip&#x27;s sound off. Do this very subtly, in a way that&#x27;s tasteful, so it&#x27;s still you talking.</p><p>Ask Claude or ChatGPT whether it can work on your video files, because not every chat can. If it can, give it your video, the clips and the list. If it can&#x27;t, do it yourself in CapCut: put your video on the timeline, add each clip on a layer above it, line up its start and end with its timestamps and mute the clip.</p></div><p class="ready"><span class="k">Ready when</span> You watch it back and it&#x27;s still you talking, with a clip only where people couldn&#x27;t see what you mentioned.</p></div></li></ol></div></section>
+<section class="card solo"><div class="blk b-prompt"><div class="prompt" data-prompt="b-roll"><h3>My B-roll prompt</h3><p class="use">Paste it into Claude or ChatGPT. Fill in the brackets and add your transcript where it says.</p><div class="ptext" id="lm-p-2">Here&#x27;s the transcript of my video, with timestamps:
+<span class="fill">[PASTE YOUR TRANSCRIPT WITH TIMESTAMPS, OR ATTACH THE FILE]</span>
+
+What people see in my video: <span class="fill">[LIKE: JUST ME TALKING TO THE CAMERA]</span>
+The look I want for the clips: <span class="fill">[LIKE: REAL FOOTAGE, WARM LIGHT]</span>
+
+Find where my video needs B-roll and write the prompt that generates each clip.
+
+Rules:
+1. Mark only where I mention something people can&#x27;t actually see in my video. Skip everything else. It should still be me talking, so most of the video stays on me.
+2. Use my words exactly. Never add a moment I didn&#x27;t say. If my transcript has no timestamps, stop and ask me for them.
+3. Time each clip to my words: it starts when I start mentioning the thing and runs a few seconds, in whole seconds. Take the times from the timestamps. Clips never overlap.
+4. Be literal. Show the thing I mention, not a symbol for it.
+5. Write each B-roll prompt so it works on its own in an AI video generator: what&#x27;s in the shot, what&#x27;s happening, where, the light and one simple camera move, in the look above. End it with the length in seconds, then: vertical 9:16, no talking.
+6. No text in the clip: no words, letters, numbers, logos or watermarks. Say so in each prompt. If a screen or page is in the shot, its writing is blurred.
+
+Hand it back as a numbered list, one number per moment, in exactly this shape:
+1. 12.4 to 16.4 s
+I say: (my words, exactly)
+B-roll prompt: (the prompt)
+
+Nothing before or after the list.</div><button type="button" class="btn btn-primary" data-copy-prompt="b-roll" data-target="lm-p-2">Copy prompt</button></div></div></section>
+<section class="card"><h2>What I say in the video</h2><div class="blk b-text"><div class="txt"><p>ChatGPT can now create the perfect B-roll footage for you, let me show you how. First you have Claude or ChatGPT look at your transcript and have it mark only where you mention something that people can&#x27;t actually see. And with those things that people can&#x27;t actually see, ask Claude or ChatGPT to create a prompt to help create that B-roll footage. I like to create all my videos inside of Higgsfield, but there&#x27;s other models you can use. Your AI is going to use Higgsfield to create those clips and once it does you can use Claude or ChatGPT to take those clips and edit it over your video. You want to do this very subtly in a way that&#x27;s tasteful so it&#x27;s still you talking, you&#x27;re just using AI to kind of enhance your video. Comment the word B-roll and I&#x27;ll send you a more in-depth guide on how to set this up for you as well as my free B-roll prompt.</p></div></div></section>
+
+<footer><p>Educational resource showing how I run my own content systems. Your results depend on your own work; nothing here is a guarantee of any outcome.</p><p>Tools and platform rules change. Checked November 6, 2026.</p></footer>
+</main>
+<script type="application/json" id="lm-data">{"slug":"b-roll-guide","prompts":{"claude-setup":"Open this page and read all of it: https://chadgpts.github.io/b-roll-guide/\nIt's Chad's free B-roll guide and prompt from his ChadGPT video \"AI Video B Roll\". What he says in the video is at the bottom of the page.\n\nSet it up with me step by step. Ask me one question at a time for anything only I know, do every part you can yourself, and tell me exactly what to click when it needs my accounts. Where the page and the video differ, follow the page.\n\nIf you can't open the link, tell me and I'll paste the page in.","b-roll":"Here's the transcript of my video, with timestamps:\n[PASTE YOUR TRANSCRIPT WITH TIMESTAMPS, OR ATTACH THE FILE]\n\nWhat people see in my video: [LIKE: JUST ME TALKING TO THE CAMERA]\nThe look I want for the clips: [LIKE: REAL FOOTAGE, WARM LIGHT]\n\nFind where my video needs B-roll and write the prompt that generates each clip.\n\nRules:\n1. Mark only where I mention something people can't actually see in my video. Skip everything else. It should still be me talking, so most of the video stays on me.\n2. Use my words exactly. Never add a moment I didn't say. If my transcript has no timestamps, stop and ask me for them.\n3. Time each clip to my words: it starts when I start mentioning the thing and runs a few seconds, in whole seconds. Take the times from the timestamps. Clips never overlap.\n4. Be literal. Show the thing I mention, not a symbol for it.\n5. Write each B-roll prompt so it works on its own in an AI video generator: what's in the shot, what's happening, where, the light and one simple camera move, in the look above. End it with the length in seconds, then: vertical 9:16, no talking.\n6. No text in the clip: no words, letters, numbers, logos or watermarks. Say so in each prompt. If a screen or page is in the shot, its writing is blurred.\n\nHand it back as a numbered list, one number per moment, in exactly this shape:\n1. 12.4 to 16.4 s\nI say: (my words, exactly)\nB-roll prompt: (the prompt)\n\nNothing before or after the list."}}</script>
+<script>
+
+(function () {
+  "use strict";
+  var data = {};
+  try { data = JSON.parse(document.getElementById("lm-data").textContent) || {}; } catch (e) { data = {}; }
+  var KEY = "chadio_lm_" + (data.slug || "page");
+  var store = {};
+  try { var raw = window.localStorage.getItem(KEY); if (raw) { store = JSON.parse(raw); } } catch (e) { store = {}; }
+  if (!store || typeof store !== "object" || Array.isArray(store)) { store = {}; }
+  function save() { try { window.localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} }
+  function part(name) {
+    var v = store[name];
+    if (!v || typeof v !== "object" || Array.isArray(v)) { v = {}; store[name] = v; }
+    return v;
+  }
+  function all(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) { e.className = cls; }
+    if (text !== undefined && text !== null) { e.textContent = text; }
+    return e;
+  }
+
+  /* ---- copy: the Clipboard API, then a textarea + execCommand for in-app browsers ---- */
+  function legacyCopy(text) {
+    var ta = document.createElement("textarea"), ok = false;
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.cssText = "position:fixed;top:0;left:0;width:1px;height:1px;padding:0;border:0;opacity:0;font-size:16px";
+    document.body.appendChild(ta);
+    try { ta.focus(); ta.select(); ta.setSelectionRange(0, text.length); ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+  function copyText(text) {
+    return new Promise(function (resolve) {
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { resolve(true); }, function () { resolve(legacyCopy(text)); });
+          return;
+        }
+      } catch (e) {}
+      resolve(legacyCopy(text));
+    });
+  }
+  function flash(btn, msg, ok) {
+    if (!btn.hasAttribute("data-label")) { btn.setAttribute("data-label", btn.textContent); }
+    btn.textContent = msg;
+    btn.classList.toggle("is-ok", !!ok);
+    clearTimeout(btn._lmTimer);
+    btn._lmTimer = setTimeout(function () { btn.textContent = btn.getAttribute("data-label"); btn.classList.remove("is-ok"); }, 1800);
+  }
+  function selectText(node) {
+    try { var r = document.createRange(); r.selectNodeContents(node); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {}
+  }
+
+  /* ---- prompts ---- */
+  var prompts = data.prompts || {};
+  all("[data-copy-prompt]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var id = btn.getAttribute("data-copy-prompt");
+      var box = document.getElementById(btn.getAttribute("data-target"));
+      var text = typeof prompts[id] === "string" ? prompts[id] : (box ? box.textContent : "");
+      copyText(text).then(function (ok) {
+        if (ok) { flash(btn, "Copied", true); }
+        else { if (box) { selectText(box); } flash(btn, "Selected: tap Copy", false); }
+      });
+    });
+  });
+
+  /* ---- checklists ---- */
+  var C = part("c");
+  all("[data-checklist]").forEach(function (box) {
+    var id = box.getAttribute("data-checklist");
+    var inputs = all("input[type=checkbox]", box);
+    var count = box.querySelector("[data-count]");
+    var saved = Array.isArray(C[id]) ? C[id] : [];
+    inputs.forEach(function (inp, i) { inp.checked = saved[i] === 1 || saved[i] === true; });
+    function update() {
+      var n = 0, st = [];
+      inputs.forEach(function (inp) { st.push(inp.checked ? 1 : 0); if (inp.checked) { n += 1; } });
+      if (count) { count.textContent = n + " of " + inputs.length; }
+      return st;
+    }
+    box.addEventListener("change", function () { C[id] = update(); save(); });
+    var clear = box.querySelector("[data-clear]");
+    if (clear) {
+      clear.addEventListener("click", function () {
+        inputs.forEach(function (inp) { inp.checked = false; });
+        C[id] = update(); save();
+      });
+    }
+    update();
+  });
+
+  /* ---- fields ---- */
+  var F = part("f");
+  all("[data-fields]").forEach(function (box) {
+    var id = box.getAttribute("data-fields");
+    if (!F[id] || typeof F[id] !== "object" || Array.isArray(F[id])) { F[id] = {}; }
+    var saved = F[id];
+    var ctrls = all("[data-field]", box);
+    ctrls.forEach(function (c) {
+      var k = c.getAttribute("data-field");
+      if (typeof saved[k] === "string") { c.value = saved[k]; }
+      c.addEventListener("input", function () { saved[k] = c.value; save(); });
+    });
+    var btn = box.querySelector("[data-copy-fields]");
+    if (btn) {
+      btn.addEventListener("click", function () {
+        var lines = [];
+        ctrls.forEach(function (c) {
+          var v = c.value.trim();
+          if (v) { lines.push(c.getAttribute("data-copy-label") + ": " + v); }
+        });
+        if (!lines.length) { flash(btn, "Type an answer first", false); return; }
+        copyText(lines.join("\n")).then(function (ok) { flash(btn, ok ? "Copied" : "Copy did not work here", ok); });
+      });
+    }
+  });
+
+  /* ---- journal: trade log + backtest ---- */
+  var jroot = document.querySelector("[data-journal]");
+  if (jroot) { journal(jroot); }
+
+  function journal(root) {
+    var J = part("j");
+    if (!Array.isArray(J.trades)) { J.trades = []; }
+    J.trades = J.trades.filter(function (t) { return t && typeof t === "object"; });
+    if (!J.bt || typeof J.bt !== "object" || Array.isArray(J.bt)) { J.bt = {}; }
+    if (!Array.isArray(J.bt.results)) { J.bt.results = []; }
+    J.bt.results = J.bt.results.filter(function (v) { return typeof v === "number" && isFinite(v); });
+    if (typeof J.bt.setup !== "string") { J.bt.setup = ""; }
+    var slug = data.slug || "journal";
+    function q(s) { return root.querySelector(s); }
+    function setText(s, v) { var e = q(s); if (e) { e.textContent = v; } }
+    function say(s, msg, bad) { var e = q(s); if (e) { e.textContent = msg; e.classList.toggle("bad", !!bad); } }
+    function num(s) {
+      s = String(s === undefined || s === null ? "" : s).replace(/\u2212/g, "-").replace(/[\sR+]/gi, "").replace(",", ".");
+      return /^-?(\d+(\.\d*)?|\.\d+)$/.test(s) ? Number(s) : NaN;
+    }
+    function r2(v) { return Math.round(v * 100) / 100; }
+    function fmtR(v) {
+      if (typeof v !== "number" || !isFinite(v)) { return "\u2013"; }
+      var a = r2(Math.abs(v));
+      return (a > 0 && v > 0 ? "+" : a > 0 && v < 0 ? "-" : "") + a + "R";
+    }
+    function pct(a, b) { return b > 0 ? Math.round(a / b * 100) + "%" : "\u2013"; }
+    function mean(a) { return a.length ? a.reduce(function (s, v) { return s + v; }, 0) / a.length : NaN; }
+    function today() {
+      var d = new Date(), m = d.getMonth() + 1, day = d.getDate();
+      return d.getFullYear() + "-" + (m < 10 ? "0" : "") + m + "-" + (day < 10 ? "0" : "") + day;
+    }
+    function niceDate(s) {
+      var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || "");
+      if (!m) { return s || ""; }
+      return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][+m[2] - 1] + " " + (+m[3]);
+    }
+    function radio(name) { var e = root.querySelector('input[name="' + name + '"]:checked'); return e ? e.value : ""; }
+    function setRadio(name, v) { all('input[name="' + name + '"]', root).forEach(function (e) { e.checked = e.value === v; }); }
+    function field(name) { var e = q('[data-j="' + name + '"]'); return e ? e.value.trim() : ""; }
+    function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+
+    /* tabs */
+    var tabs = all("[role=tab]", root);
+    function show(name) {
+      tabs.forEach(function (t) {
+        var on = t.getAttribute("data-tab") === name;
+        t.setAttribute("aria-selected", on ? "true" : "false");
+        t.tabIndex = on ? 0 : -1;
+      });
+      all("[role=tabpanel]", root).forEach(function (p) { p.hidden = p.getAttribute("data-panel") !== name; });
+    }
+    tabs.forEach(function (t, i) {
+      t.addEventListener("click", function () { show(t.getAttribute("data-tab")); });
+      t.addEventListener("keydown", function (e) {
+        if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") { return; }
+        var n = tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+        show(n.getAttribute("data-tab")); n.focus();
+      });
+    });
+    show("log");
+
+    /* csv */
+    function cell(v) {
+      var s = v === undefined || v === null ? "" : String(v);
+      if (/^[=+\-@\t\r]/.test(s) && !/^-?\d+(\.\d+)?$/.test(s)) { s = "'" + s; }
+      return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }
+    function csv(rows) { return rows.map(function (r) { return r.map(cell).join(","); }).join("\r\n") + "\r\n"; }
+    function download(name, text, msgSel) {
+      try {
+        var blob = new Blob(["\ufeff" + text], { type: "text/csv;charset=utf-8" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url; a.download = name; a.hidden = true;
+        document.body.appendChild(a); a.click();
+        setTimeout(function () { URL.revokeObjectURL(url); if (a.parentNode) { a.parentNode.removeChild(a); } }, 2000);
+        say(msgSel, "Downloaded " + name, false);
+      } catch (e) {
+        say(msgSel, "This browser blocked the download. Open the page in Safari or Chrome and try again.", true);
+      }
+    }
+
+    /* trade log */
+    var dateEl = q('[data-j="date"]');
+    if (dateEl && !dateEl.value) { dateEl.value = today(); }
+    function summary() {
+      var taken = J.trades.filter(function (t) { return t.taken !== "skipped"; });
+      var scored = taken.filter(function (t) { return typeof t.r === "number" && isFinite(t.r); });
+      var total = scored.reduce(function (s, t) { return s + t.r; }, 0);
+      var wins = scored.filter(function (t) { return t.r > 0; }).length;
+      var answered = J.trades.filter(function (t) { return t.plan === "yes" || t.plan === "no"; });
+      var kept = answered.filter(function (t) { return t.plan === "yes"; }).length;
+      setText('[data-stat="taken"]', String(taken.length));
+      setText('[data-stat="skipped"]', String(J.trades.length - taken.length));
+      setText('[data-stat="total"]', fmtR(total));
+      setText('[data-stat="winrate"]', pct(wins, scored.length));
+      setText('[data-stat="winrate-sub"]', scored.length ? wins + " of " + scored.length + " taken trades won" : "no taken trades yet");
+      setText('[data-stat="plan"]', pct(kept, answered.length));
+      setText('[data-stat="plan-sub"]', answered.length ? kept + " of " + answered.length + " logged setups" : "nothing logged yet");
+    }
+    function renderTrades() {
+      var list = q("[data-j-list]");
+      if (!list) { return; }
+      list.textContent = "";
+      var rows = J.trades.slice().sort(function (a, b) {
+        return String(b.date || "").localeCompare(String(a.date || "")) || (b.t || 0) - (a.t || 0);
+      });
+      if (!rows.length) { list.appendChild(el("li", "empty", "No trades yet. Your first one shows up here.")); }
+      rows.forEach(function (t) {
+        var li = el("li", "jrow"), top = el("div", "jrow-top");
+        top.appendChild(el("div", "jrow-what", [niceDate(t.date), t.market, t.setup].filter(Boolean).join(" \u00b7 ") || "Trade"));
+        var skipped = t.taken === "skipped";
+        top.appendChild(el("div", "jrow-r" + (skipped ? "" : t.r > 0 ? " gain" : t.r < 0 ? " loss" : ""), skipped ? "Skipped" : fmtR(t.r)));
+        li.appendChild(top);
+        var size = t.size ? t.size + (String(t.size) === "1" ? " contract" : " contracts") : "";
+        var meta = [t.session, size, cap(t.trend || ""), t.plan === "yes" ? "Followed my plan" : t.plan === "no" ? "Broke my plan" : ""]
+          .filter(Boolean).join(" \u00b7 ");
+        if (meta) { li.appendChild(el("div", "jrow-meta", meta)); }
+        if (t.thinking) { li.appendChild(el("p", "jrow-think", t.thinking)); }
+        var del = el("button", "btn btn-small btn-quiet jrow-del", "Delete");
+        del.type = "button";
+        del.setAttribute("aria-label", "Delete the trade from " + (niceDate(t.date) || "this log"));
+        del.addEventListener("click", function () {
+          J.trades = J.trades.filter(function (x) { return x.id !== t.id; });
+          save(); renderTrades();
+        });
+        li.appendChild(del);
+        list.appendChild(li);
+      });
+      summary();
+    }
+    var add = q("[data-j-add]");
+    if (add) {
+      add.addEventListener("click", function () {
+        var taken = radio("lm-j-taken") || "taken", rRaw = field("r"), r = num(rRaw), plan = radio("lm-j-plan");
+        if (rRaw && !isFinite(r)) { say("[data-j-msg]", "The result must be a number of R, like 1, -1 or 0.5.", true); return; }
+        if (taken === "taken" && !isFinite(r)) { say("[data-j-msg]", "Type the result in R first: 1, -1, 0.5 ...", true); return; }
+        if (!plan) { say("[data-j-msg]", "Pick Yes or No for \u201cFollowed my plan\u201d.", true); return; }
+        J.trades.push({
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7), t: Date.now(),
+          date: field("date") || today(), market: field("market"), setup: field("setup"), session: field("session"),
+          size: field("size"), r: isFinite(r) ? r : null, trend: radio("lm-j-trend"), taken: taken, plan: plan,
+          thinking: field("thinking")
+        });
+        save(); renderTrades();
+        ["r", "thinking"].forEach(function (n) { var e = q('[data-j="' + n + '"]'); if (e) { e.value = ""; } });
+        setRadio("lm-j-plan", ""); setRadio("lm-j-trend", ""); setRadio("lm-j-taken", "taken");
+        say("[data-j-msg]", "Saved. " + J.trades.length + (J.trades.length === 1 ? " setup" : " setups") + " in your log.", false);
+      });
+    }
+    var jx = q("[data-j-export]");
+    if (jx) {
+      jx.addEventListener("click", function () {
+        var rows = J.trades.slice().sort(function (a, b) {
+          return String(a.date || "").localeCompare(String(b.date || "")) || (a.t || 0) - (b.t || 0);
+        }).map(function (t) {
+          return [t.date, t.market, t.setup, t.session, t.size, t.r === null || t.r === undefined ? "" : t.r, t.trend,
+                  t.taken, t.plan, t.thinking];
+        });
+        var head = ["date", "market", "setup", "session", "size_contracts", "result_r", "trend", "taken_or_skipped",
+                    "followed_plan", "thinking"];
+        download(slug + "-trade-log-" + today() + ".csv", csv([head].concat(rows)), "[data-j-msg]");
+      });
+    }
+    var jc = q("[data-j-clear]");
+    if (jc) {
+      jc.addEventListener("click", function () {
+        if (!J.trades.length) { say("[data-j-msg]", "Your log is already empty.", false); return; }
+        var ok = false;
+        try { ok = window.confirm("Delete all " + J.trades.length + " setups from your log? This can't be undone."); } catch (e) { ok = false; }
+        if (!ok) { return; }
+        J.trades = []; save(); renderTrades(); say("[data-j-msg]", "Your log is empty.", false);
+      });
+    }
+
+    /* backtest */
+    var setupEl = q('[data-bt="setup"]'), rEl = q('[data-bt="r"]');
+    if (setupEl) {
+      setupEl.value = J.bt.setup;
+      setupEl.addEventListener("input", function () { J.bt.setup = setupEl.value; save(); });
+    }
+    function renderBt() {
+      var res = J.bt.results, n = res.length;
+      var wins = res.filter(function (v) { return v > 0; }), losses = res.filter(function (v) { return v < 0; });
+      setText('[data-bt-stat="n"]', n + " of 50");
+      setText('[data-bt-stat="n-sub"]', n >= 50 ? "enough to judge this setup" : (50 - n) + " to go");
+      setText('[data-bt-stat="winrate"]', pct(wins.length, n));
+      setText('[data-bt-stat="avgwin"]', wins.length ? fmtR(mean(wins)) : "\u2013");
+      setText('[data-bt-stat="avgloss"]', losses.length ? fmtR(mean(losses)) : "\u2013");
+      setText('[data-bt-stat="ev"]', n ? fmtR(mean(res)) : "\u2013");
+      var list = q("[data-bt-list]");
+      if (!list) { return; }
+      list.textContent = "";
+      res.forEach(function (v, i) {
+        var li = el("li", "chip");
+        li.appendChild(el("span", "chip-n", "#" + (i + 1)));
+        li.appendChild(el("span", "chip-v" + (v > 0 ? " gain" : v < 0 ? " loss" : ""), fmtR(v)));
+        var x = el("button", "chip-x", "\u00d7");
+        x.type = "button";
+        x.setAttribute("aria-label", "Delete result " + (i + 1));
+        x.addEventListener("click", function () { J.bt.results.splice(i, 1); save(); renderBt(); });
+        li.appendChild(x);
+        list.appendChild(li);
+      });
+    }
+    function addResult(v) {
+      if (!isFinite(v)) { say("[data-bt-msg]", "Type a result in R, like 2 or -1.", true); return false; }
+      J.bt.results.push(v); save(); renderBt();
+      say("[data-bt-msg]", "Added " + fmtR(v) + ". " + J.bt.results.length + " of 50.", false);
+      return true;
+    }
+    function addTyped() { if (rEl && addResult(num(rEl.value))) { rEl.value = ""; } if (rEl) { rEl.focus(); } }
+    var ba = q("[data-bt-add]");
+    if (ba) { ba.addEventListener("click", addTyped); }
+    if (rEl) { rEl.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); addTyped(); } }); }
+    all("[data-bt-quick]", root).forEach(function (b) {
+      b.addEventListener("click", function () { addResult(Number(b.getAttribute("data-bt-quick"))); });
+    });
+    var bx = q("[data-bt-export]");
+    if (bx) {
+      bx.addEventListener("click", function () {
+        var rows = J.bt.results.map(function (v, i) { return [J.bt.setup, i + 1, v]; });
+        download(slug + "-backtest-" + today() + ".csv", csv([["setup", "trade", "result_r"]].concat(rows)), "[data-bt-msg]");
+      });
+    }
+    var bc = q("[data-bt-clear]");
+    if (bc) {
+      bc.addEventListener("click", function () {
+        if (!J.bt.results.length) { say("[data-bt-msg]", "No results to clear.", false); return; }
+        var ok = false;
+        try { ok = window.confirm("Delete all " + J.bt.results.length + " backtest results? This can't be undone."); } catch (e) { ok = false; }
+        if (!ok) { return; }
+        J.bt.results = []; save(); renderBt(); say("[data-bt-msg]", "Results cleared.", false);
+      });
+    }
+    renderTrades();
+    renderBt();
+  }
+})();
+</script>
+</body>
+</html>
